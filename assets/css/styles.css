@@ -1,0 +1,23 @@
+/*******************************GENERAL***************************/
+html{
+
+}
+
+body{
+    font-family: 'Fredoka One', cursive;
+}
+/***********************************************CONTENT MAIN******************************/
+.card{
+    height: 100%!important;
+}
+
+/***********************NAVBAR************************************************/
+#logo_gite{
+    border-radius: 100%;
+    border: solid 3px white;
+    width: 20%;
+}
+/*********************PAGE ACCUEIL*******************************/
+@media screen and (max-width: 800px){
+
+}

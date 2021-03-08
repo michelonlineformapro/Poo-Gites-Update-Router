@@ -1,0 +1,16 @@
+{
+    "name": "m.michel/new-gites",
+    "description": "Site de location de gites",
+    "require": {
+        "automattic/jetpack-autoloader": "dev-master",
+        "phpmailer/phpmailer": "^6.3",
+        "ext-pdo": "*"
+    },
+    "authors": [
+        {
+            "name": "michel michael",
+            "email": "m.michel@onlineformapro.com"
+        }
+    ],
+    "minimum-stability": "dev"
+}
