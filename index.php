@@ -44,12 +44,15 @@ if($url === 'accueil'){
     require 'views/reservation.php';
 }elseif ($url === "confirmer_reservation"){
     require "views/confirmer_reservation.php";
+}elseif ($url === "incription"){
+    require "views/inscription.php";
 }
-/*
+
+
 elseif($url !=  '#:[\w]+)#'){
     require 'views/404.php';
 }
-*/
+
 
 
 $content = ob_get_clean();

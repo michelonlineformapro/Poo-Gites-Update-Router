@@ -63,6 +63,7 @@ class Reservation
     </head>
     <body style="color: #6cc3d5;">
     <div style="color: #6cc3d5; padding: 20px;">
+
         <img src="https://qiwo-indie-games.alwaysdata.net/assets/images/2.jpg" style="display: block; border-radius: 100%" width="50px" height="50px">
         <h3 style="color: #1D2326">LOCA-GITES.COM</h3>
         <!--INFOS DE DEBUG -->

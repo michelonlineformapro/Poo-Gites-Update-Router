@@ -17,7 +17,20 @@ body{
     border: solid 3px white;
     width: 20%;
 }
-/*********************PAGE ACCUEIL*******************************/
+
+/***************************FORMULAIRE DE CONNEXION**********************/
+#form-admin{
+    display: none;
+}
+
+#form-user{
+    display: none;
+}
+
+
+
+
+/*********************RWD & MEDIA QUERIES*******************************/
 @media screen and (max-width: 800px){
 
 }

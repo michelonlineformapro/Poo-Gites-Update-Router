@@ -7,6 +7,22 @@ $gite = new Gites();
 <div id="conteneur-accueil" class="container">
 
 <h1 class="text-center text-info">NOS GITE EN LOCATION</h1>
+
+    <h2 class="text-danger">Recherche</h2>
+
+    <form method="post">
+        <input type="search" name="recherche" class="form-control" />
+        <br />
+        <button type="submit" name="btn-search-name" class="btn btn-info">Valider la recherche</button>
+    </form>
+
+    <?php
+        if(isset($_POST['btn-search-name'])){
+            $gite->searchGiteByName();
+        }
+    ?>
+
+
     <!--MODIFIER LE LIENS ET LE ROUTER-->
     <form action="index.php?url=rechercher_gite"  method="post">
         <div class="row">
