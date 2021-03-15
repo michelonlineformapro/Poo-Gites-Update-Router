@@ -674,4 +674,41 @@ $req = $db->query("SELECT * FROM gites INNER JOIN category_gites ON gites.gite_c
 
     }
 
+    //Afficher des commentaires par gite
+    public function getCommentsByGite(){
+        //Connexion à PDO
+        $db = $this->getPDO();
+        //Requète SQL selection de tous depuis la table commentaires ou la clé etrangère est a ID du gite trié par l'ID du commentaire
+        $sql = "SELECT * FROM commentaires INNER JOIN gites ON commentaires.gites_id = gites.id WHERE commentaires.gites_id = ?";
+        //Requète préparée
+        $req = $db->prepare($sql);
+        //Liaison récupération de l'ID dans URL
+        $req->bindParam(1, $_GET['id']);
+        //Execution de la requète
+        $req->execute();
+        //Départ de la liste
+        ?>
+        <ul class="list-group mt-2">
+            <li class="list-group-item active">Commentaire : </li>
+        <?php
+        //Boucle de lecture des commentaires
+        foreach ($req as $row){
+            //Si on a des commentaires par ID
+            if($row){
+            ?>
+                <li class="list-group-item">Nom de l'auteur : <b class="text-info"><?= $row['auteur_commentaire'] ?></b></li>
+                <li class="list-group-item">Commentaire de l'auteur  : <b class="text-info"><?= $row['contenus_commentaire'] ?></b></li>
+                <br>
+        <?php
+
+            }else{
+                echo "<p class='alert-danger p-2 mt-2'>Aucun commentaire pour de gite</p>";
+            }
+        }
+        ?>
+        </ul>
+        <?php
+
+    }
+
 }

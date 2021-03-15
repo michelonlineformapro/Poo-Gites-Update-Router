@@ -10,7 +10,8 @@ $gites = new Gites();
 <?php
 $id_gite = $_GET['id'];
 $gites->getGiteById($id_gite);
-
+//Commentaire du gites
+$gites->getCommentsByGite();
 
 ?>
 
