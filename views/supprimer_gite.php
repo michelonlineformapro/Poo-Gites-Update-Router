@@ -12,7 +12,7 @@ $id_gite = $_GET['id'];
 $gite->giteToDelete($id_gite);
 ?>
 <form action="" method="post">
-    <button type="submit" name="confirm_delete_gite" class="btn btn-danger" value="CONFIMER LA SUPRESSION DU GITE ?">
+    <button type="submit" name="confirm_delete_gite" class="btn btn-danger mt-3">CONFIMER LA SUPRESSION DU GITE ?</button>
 </form>
 
 <?php

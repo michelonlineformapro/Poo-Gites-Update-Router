@@ -4,7 +4,7 @@ require "Database.php";
 
 class Gites extends Database
 {
-    //Creation de propriéte de la classe Gites
+    //Creation des propriétes de la classe Gites
     private $id_gite;
     private $nom_gite;
     private $description_gite;
@@ -61,7 +61,7 @@ $req = $db->query("SELECT * FROM gites INNER JOIN category_gites ON gites.gite_c
 
                     <p><b>Date de depart : </b></p>
                     <p class="alert-info p-2"> <?=  $date_d->format('d-m-Y')?></p>
-                    <a href="index.php?url=details_gite&id=<?= $row['id'] ?>" class="btn btn-outline-info">Plus d'infos</a>
+                    <a href="details_gite&id=<?= $row['id'] ?>" class="btn btn-outline-info">Plus d'infos</a>
                     <br /><br />
                     <a href="index.php?url=maj_gite&id=<?= $row['id'] ?>" class="btn btn-outline-warning">Editer le gite</a>
                     <br /><br />
@@ -75,7 +75,7 @@ $req = $db->query("SELECT * FROM gites INNER JOIN category_gites ON gites.gite_c
 </div>
 <?php
     }
-
+    //Récupéré un gite pai ID pour la page détails
     public function getGiteById($id){
         $db = $this->getPDO();
         $req = $db->prepare("SELECT * FROM gites INNER JOIN category_gites ON gites.gite_category = category_gites.id_category WHERE gites.id = ?");
@@ -143,86 +143,115 @@ $req = $db->query("SELECT * FROM gites INNER JOIN category_gites ON gites.gite_c
 
 
     }
-
+    //Ajouter un gite appélé dans la page ajouter_gites.php
     public function addGite(){
-        $db = $this->getPDO();
+
+        //On verifie les champs du formulaires
         if(isset($_POST['nom_gite'])){
-            $nom_gite = $_POST['nom_gite'];
+            $this->nom_gite = $_POST['nom_gite'];
+        }else{
+            echo "<p class='alert-danger p-2'>Merci de remplir le champ nom du gite</p>";
         }
 
         if(isset($_POST['description_gite'])){
-            $description_gite = $_POST['description_gite'];
+            $this->description_gite = $_POST['description_gite'];
+        }else{
+            echo "<p class='alert-danger p-2'>Merci de remplir le champ description du gite</p>";
         }
 
         if(isset($_POST['img_gite'])){
-            $img_gite = $_POST['img_gite'];
+            $this->img_gite = $_POST['img_gite'];
+        }else{
+            echo "<p class='alert-danger p-2'>Merci de remplir le champ image du gite</p>";
         }
 
         if(isset($_POST['nbr_chambre'])){
-            $nbr_chambre = $_POST['nbr_chambre'];
+            $this->nbr_chambre = $_POST['nbr_chambre'];
+        }else{
+            echo "<p class='alert-danger p-2'>Merci de remplir le champ nombre de chambre</p>";
         }
 
         if(isset($_POST['nbr_sdb'])){
-            $nbr_sdb= $_POST['nbr_sdb'];
+            $this->nbr_sdb= $_POST['nbr_sdb'];
+        }else{
+            echo "<p class='alert-danger p-2'>Merci de remplir le champ nombre de salle de bain</p>";
         }
 
         if(isset($_POST['zone_geo'])){
-            $zone_geo = $_POST['zone_geo'];
+            $this->zone_geo = $_POST['zone_geo'];
+        }else{
+            echo "<p class='alert-danger p-2'>Merci de remplir le champ departement</p>";
         }
 
         if(isset($_POST['prix'])){
-            $prix = $_POST['prix'];
+            $this->prix = $_POST['prix'];
+        }else{
+            echo "<p class='alert-danger p-2'>Merci de remplir le champ prix du gite</p>";
         }
 
         if(isset($_POST['disponible'])){
-            $disponible = $_POST['disponible'];
+            $this->disponible = $_POST['disponible'];
+        }else{
+            echo "<p class='alert-danger p-2'>Merci de remplir le champ disponible</p>";
         }
 
         if(isset($_POST['date_arrivee'])){
-            $date_arrivee = $_POST['date_arrivee'];
+            $this->date_arrivee = $_POST['date_arrivee'];
+        }else{
+            echo "<p class='alert-danger p-2'>Merci de remplir le champ date d'arrivée</p>";
         }
 
         if(isset($_POST['date_depart'])){
-            $date_depart = $_POST['date_depart'];
+            $this->date_depart = $_POST['date_depart'];
+        }else{
+            echo "<p class='alert-danger p-2'>Merci de remplir le champ date de depart</p>";
         }
 
         if(isset($_POST['type_gite'])){
-            $type_gite = $_POST['type_gite'];
+            $this->type_gite = $_POST['type_gite'];
+        }else{
+            echo "<p class='alert-danger p-2'>Merci de remplir le champ type de gite</p>";
         }
+        //Verifié que la date d'arrivée n'est pas supérieur à la date départ ceci englobe le try catch
+        if(isset($this->date_depart) > isset($this->date_arrivee)){
+            echo "<p class='alert-danger p-2'>ATTENTION : la date d'arrivée est supérieur à la date de part !</p>";
+        }
+            //Connexion a PDO + requète SQL + requète préparée + execution
+            try {
+                $db = $this->getPDO();
+                $req = $db->prepare("INSERT INTO gites (nom_gite, description_gite, img_gite, nbr_chambre, nbr_sdb, zone_geo, prix, disponible, date_arrivee, date_depart, gite_category) VALUES (?,?,?,?,?,?,?,?,?,?,?) ");
+                $req->bindParam(1, $this->nom_gite);
+                $req->bindParam(2, $this->description_gite);
+                $req->bindParam(3, $this->img_gite);
+                $req->bindParam(4, $this->nbr_chambre);
+                $req->bindParam(5, $this->nbr_sdb);
+                $req->bindParam(6, $this->zone_geo);
+                $req->bindParam(7, $this->prix);
+                $req->bindParam(8, $this->disponible);
+                $req->bindParam(9, $this->date_arrivee);
+                $req->bindParam(10, $this->date_depart);
+                $req->bindParam(11, $this->type_gite);
+                $insert = $req->execute(array($this->nom_gite, $this->description_gite, $this->img_gite, $this->nbr_chambre, $this->nbr_sdb, $this->zone_geo, $this->prix, $this->disponible, $this->date_arrivee, $this->date_depart, $this->type_gite));
+                //Si l'execution fonctionne
+                //On fais une redirection Sinon on affiche une erreur
+                if ($insert) {
+                    header("Location: http://localhost/newgites/index.php?url=administration");
+                } else {
+                    echo "<p class='alert-danger p-3'>Une erreur est survenue durant l'ajout du gite, merci de verifié tous les champs !</p>";
+                }
 
-        try{
-            $db = $this->getPDO();
-            $req = $db->prepare("INSERT INTO gites (nom_gite, description_gite, img_gite, nbr_chambre, nbr_sdb, zone_geo, prix, disponible, date_arrivee, date_depart, gite_category) VALUES (?,?,?,?,?,?,?,?,?,?,?) ");
-            $req->bindParam(1, $nom_gite);
-            $req->bindParam(2, $description_gite);
-            $req->bindParam(3, $img_gite);
-            $req->bindParam(4, $nbr_chambre);
-            $req->bindParam(5, $nbr_sdb);
-            $req->bindParam(6, $zone_geo);
-            $req->bindParam(7, $prix);
-            $req->bindParam(8, $disponible);
-            $req->bindParam(9, $date_arrivee);
-            $req->bindParam(10, $date_depart);
-            $req->bindParam(11, $type_gite);
-            $insert = $req->execute(array($nom_gite, $description_gite, $img_gite, $nbr_chambre, $nbr_sdb, $zone_geo, $prix, $disponible, $date_arrivee, $date_depart, $type_gite));
-            if($insert){
-                header("Location: http://localhost/newgites/index.php?url=administration");
-                var_dump($req);
-                return $req;
-            }else{
-                echo "<p class='alert-danger p-3'>Une erreur est survenue durant l'ajout du gite, merci de verifié tous les champs !</p>";
+            } catch (PDOException $e) {
+                echo "Erreur lors de l'ajout du gites ! Merci de recommencer !";
             }
 
-        }catch (PDOException $e){
-            echo "Erreur : Merci de vérifié les données du formulaire";
-        }
-
-
     }
-
+    //Mise à jour  des gites en mode administrateur
     public function updateGite(){
+
+        //Connexion à PDO
         $db = $this->getPDO();
 
+        //Verif des champs du formulaires
         if(isset($_POST['nom_gite'])){
             $this->nom_gite = htmlspecialchars(strip_tags($_POST['nom_gite']));
         }
@@ -267,23 +296,28 @@ $req = $db->query("SELECT * FROM gites INNER JOIN category_gites ON gites.gite_c
             $this->type_gite = htmlspecialchars(strip_tags($_POST['type_gite']));
         }
 
+        //Requète SQL
+
         $sql = "UPDATE gites SET nom_gite = ?, description_gite = ?, img_gite = ?, nbr_chambre = ?, nbr_sdb = ?, zone_geo = ?, prix = ?, disponible = ?, date_arrivee = ?, date_depart = ?, gite_category = ? WHERE id = ?";
+        //Recuperation de ID
         $id = $_GET['id'];
+        //Requète préparée
         $req = $db->prepare("SELECT * FROM gites WHERE id = ?");
+        //Recherche dans la table
         $req->fetch(PDO::FETCH_ASSOC);
-        $update = $update = $db->prepare($sql);
-        $update->bindParam(1, $this->nom_gite);
-        $update->bindParam(2, $this->description_gite);
-        $update->bindParam(3, $this->img_gite);
-        $update->bindParam(4, $this->nbr_chambre);
-        $update->bindParam(5, $this->nbr_sdb);
-        $update->bindParam(6, $this->zone_geo);
-        $update->bindParam(7, $this->prix);
-        $update->bindParam(8, $this->disponible);
-        $update->bindParam(9, $this->date_arrivee);
-        $update->bindParam(10, $this->date_depart);
-        $update->bindParam(11, $this->type_gite);
-        $maj = $update->execute(
+
+        $req->bindParam(1, $this->nom_gite);
+        $req->bindParam(2, $this->description_gite);
+        $req->bindParam(3, $this->img_gite);
+        $req->bindParam(4, $this->nbr_chambre);
+        $req->bindParam(5, $this->nbr_sdb);
+        $req->bindParam(6, $this->zone_geo);
+        $req->bindParam(7, $this->prix);
+        $req->bindParam(8, $this->disponible);
+        $req->bindParam(9, $this->date_arrivee);
+        $req->bindParam(10, $this->date_depart);
+        $req->bindParam(11, $this->type_gite);
+        $maj = $req->execute(
                 array(
                         $this->nom_gite,
                     $this->description_gite,
@@ -309,15 +343,22 @@ $req = $db->query("SELECT * FROM gites INNER JOIN category_gites ON gites.gite_c
 
 
     }
-
+    //Supprimer un gite
     public function giteToDelete($id){
 
+        //Connexion à PDO
         $db = $this->getPDO();
+        //Requète préparée + sql
         $req = $db->prepare("SELECT * FROM gites INNER JOIN category_gites ON gites.gite_category = category_gites.id_category WHERE gites.id = ? ");
+        //Récupération de id dans url
         $id = $_GET['id'];
+        //Loaison des paramètres
         $req->bindParam(1, $id);
+        //Execution de la requète
         $req->execute();
+        //Recherche dans la table
         $res = $req->fetch();
+        //Reprise des valeurs du gite
         ?>
         <div>
             <h2 class="text-center text-warning"><?= $res['nom_gite'] ?></h2>
@@ -338,34 +379,48 @@ $req = $db->query("SELECT * FROM gites INNER JOIN category_gites ON gites.gite_c
         </div>
         <?php
         }
-
-        public function deleteGite(){
+    //Confirmation de supression du gite
+    public function deleteGite(){
+        //Connexion à PDO
             $db = $this->getPDO();
+            //Récupération de ID
             $id = $_GET['id'];
+            //Requète SQL
             $sql = "DELETE FROM gites WHERE id = ?";
+            //Requète préparée
             $req = $db->prepare($sql);
+            //Liaison des paramètres
             $req->bindParam(1, $id);
+            //Execution de la requète
             $req->execute(array($id));
+            //Si ca fonctionne
             if ($req) {
                 header("Location: http://localhost/newgites/index.php?url=administration");
             } else {
+                //Sinon on affiche une erreur
                 echo "<p class='alert-warning p-2'>Une erreur est survenue duarant la supression de cet élément.</p>";
             }
         }
-        public function avalableGite(){
+        //Afficher les gite disponible pour les visiteurs
+    public function avalableGite(){
+        //Stocké la date du jour
             $today = date("Y-m-d");
-
+            //Connexion à PDO
             $db = $this->getPDO();
+
             //SELECT * FROM gites WHERE  date_arrivee  > '".$date_start."' AND date_depart < '".$date_end."' AND nbr_chambre = '".$nbr_chambre."
+            //On affiche tous les gites dont la date de départ est < a la date du jour
             $req = $db->query("SELECT * FROM gites WHERE date_depart < '".$today."' AND disponible = 1");
             ?>
             <div class="row">
                 <?php
+                //Boucle de lecture
                 foreach ($req as $row){
                     /*
                     echo "Date du jour :" .$today;
                     echo "Date de depart :" .$row['date_depart'];
                     */
+                    //On affiche la bonne chaine de caractères en fonction du booleen 0 = false & 1 = true
                     $dispo = $row['disponible'];
                     //Si diponible  = 0
                     if($dispo == false) {
@@ -396,11 +451,12 @@ $req = $db->query("SELECT * FROM gites INNER JOIN category_gites ON gites.gite_c
             </div>
             <?php
         }
-
-
+    //Systeme de filtre par date a l'aide du formulaire de recherche
     public function sortGiteByDate(){
         $db = $this->getPDO();
         $today = date("d-m-Y");
+
+        //Récupération des valeurs du formaulaire
 
         if(isset($_POST['date_arrivee'])){
             $date_start = $_POST['date_arrivee'];
@@ -418,7 +474,7 @@ $req = $db->query("SELECT * FROM gites INNER JOIN category_gites ON gites.gite_c
         var_dump($date_end);
         var_dump($nbr_chambre);
         */
-
+        //Ici on affiche les résultats ou les dates de départ dans la table sont inférieurs à la date entrée par l'utilisateur
         $search = $db->query("SELECT * FROM gites WHERE date_depart < '".$date_end."' AND nbr_chambre = '".$nbr_chambre."'");
 
         ?>
@@ -475,13 +531,19 @@ $req = $db->query("SELECT * FROM gites INNER JOIN category_gites ON gites.gite_c
         <?php
 
     }
-
+    //Méthode recapitulatif des données du gite réservé lorsque le visiteur valide la reservation dans l'email
     public function recapGiteById($id){
+        //Connexion à PDO
         $db = $this->getPDO();
+        //Requète SQL similaire à getGiteById sans les bouton de détails et de reservation
         $req = $db->prepare("SELECT * FROM gites INNER JOIN category_gites ON gites.gite_category = category_gites.id_category WHERE gites.id = ?");
+        //Recup de l'ID
         $id = $_GET['id'];
+        //Liaison des paramètres
         $req->bindParam(1, $id);
+        //Execution de la requète
         $req->execute();
+        //Listing des element trouvé
         $res = $req->fetch();
         ?>
         <div>
@@ -507,24 +569,53 @@ $req = $db->query("SELECT * FROM gites INNER JOIN category_gites ON gites.gite_c
 
 
     }
-
+    //Le gite ne s'affiche plus lors de la confirmation de réservation
     public function disabledGite(){
+        //Connexion à PDO
         $db = $this->getPDO();
+        //Requète SQL de mise à jour le boolen disponible passe a 0 par gite concerné
         $sql = "UPDATE gites SET disponible = 0 WHERE id = ?";
+        //Requète préparée
         $changeStatus = $db->prepare($sql);
+        //Ternaire si id est recup sion id est vide
         $id = (isset($_GET['id']) ? $_GET['id'] : '');
+        //Liaison des paramètres
         $changeStatus->bindParam(1, $id);
+        //Execution de la requète
         $res = $changeStatus->execute();
+        //Si ca marche
         if($res){
             echo "<p class='alert-success p-3'>Votre commande est bien validée</p>";
             echo "<a class='btn btn-success' href='accueil'>Retour</a>";
             header("Refresh: 5, http://localhost/newgites/accueil");
         }else{
+            //Sinon on affiche une erreur
             echo "<p class='alert-danger p-3'>Une erreur est survenue lors de la reservation, merci de verifié vos email !</p>";
         }
     }
-
+    //Si la date du jour est supérieur à la date de départ et que disponible est  = 0
+    public function checkDateGite(){
+        //Connexion a PDO
+        $db = $this->getPDO();
+        //Date du jour
+        $today = date("d-m-Y");
+        //On parcour tous les gites
+        $sqlAll = "SELECT * FROM gites";
+        $getAll = $db->query($sqlAll);
+        foreach ($getAll as $row){
+            //Si la date du jour est supérieur à la date de départ et que disponible est  = 0
+            if($today > $row['date_depart'] && $row['disponible'] == 0){
+                $sql = "UPDATE gites SET disponible = 1";
+                //Requète préparée
+                $updateDispoGite = $db->prepare($sql);
+                //Execution de la requète
+                $updateDispoGite->execute();
+            }
+        }
+    }
+    //Recherche de gite par mot clé dans nom_gite + description_gite + prix + category_gite
     public function  searchGiteByName(){
+        //Connexion à PDO
         $db = $this->getPDO();
 
         //Recup de input recherche
@@ -533,12 +624,14 @@ $req = $db->query("SELECT * FROM gites INNER JOIN category_gites ON gites.gite_c
         }else{
             $recherche = "";
             if(empty($recherche)){
-                echo "";
+                echo "<p class='alert-danger mt-2 p-2'>Merci d'enter un champ dans le barre de recherche</p>";
             }
         }
 
-        $sql = "SELECT * FROM gites WHERE nom_gite LIKE '%$recherche%'";
+        $sql = "SELECT * FROM gites WHERE nom_gite LIKE '%$recherche%' OR description_gite LIKE '%$recherche%' OR prix LIKE '%$recherche%' OR gite_category LIKE '%$recherche%'";
+        //Parcours des résultats
         $search = $db->query($sql);
+        //Boucle de lecture
         foreach ($search as $row){
             ?>
             <div class="col-4 mt-3">
@@ -572,7 +665,7 @@ $req = $db->query("SELECT * FROM gites INNER JOIN category_gites ON gites.gite_c
 
                         <p><b>Date de depart : </b></p>
                         <p class="alert-info p-2"> <?=  $date_d->format('d-m-Y')?></p>
-                        <a href="index.php?url=details_gite.php&id=<?= $row['id'] ?>" class="btn btn-outline-info">Plus d'infos</a>
+                        <a href="details_gite.php&id=<?= $row['id'] ?>" class="btn btn-outline-info">Plus d'infos</a>
                     </div>
                 </div>
             </div>

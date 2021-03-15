@@ -3,6 +3,7 @@ $title = "Mon Gites.com -ACCUEIL-";
 require "Models/Gites.php";
 //Instance de la classe gites
 $gite = new Gites();
+$gite->checkDateGite();
 ?>
 <div id="conteneur-accueil" class="container">
 
