@@ -11,6 +11,9 @@
             <li class="nav-item active">
                 <a class="nav-link" href="accueil">ACCUEIL <span class="sr-only">(current)</span></a>
             </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="rechercher">RECHERCHE AVANCÉE</a>
+            </li>
             <!--Si un utilisateur est connecter-->
             <li class="nav-item">
                 <?php
