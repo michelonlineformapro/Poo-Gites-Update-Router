@@ -2,8 +2,7 @@
 //Appel du fichier class Database
 require "Database.php";
 
-class Gites extends Database
-{
+class Gites extends Database{
     //Creation des propriétes de la classe Gites
     private $id_gite;
     private $nom_gite;
@@ -17,6 +16,12 @@ class Gites extends Database
     private $date_arrivee;
     private $date_depart;
     private $type_gite;
+
+    //Table commentaire
+    private $auteur_commentaire;
+    private $contenus_commentaire;
+    private $gites_id;
+    private $id_commentaire;
 
 
     //Methodes public de liste des gites (client)
@@ -94,19 +99,28 @@ $req = $db->query("SELECT * FROM gites INNER JOIN category_gites ON gites.gite_c
                     <br>
                     <?php
                     //On demarre la session
-
                     //si session connecter retourne la page d'accueil
                     if(isset($_SESSION['connecter']) && $_SESSION['connecter'] === true){
                         ?>
-                        <a href="index.php?url=administration" class="btn btn-outline-danger mt-2">RETOUR</a>
+                        <a href="administration" class="btn btn-outline-danger mt-2">RETOUR</a>
                         <?php
                     }else{
                         ?>
-                        <a href="index.php?url=accueil" class="btn btn-outline-danger mt-2">RETOUR</a>
+                        <a href="accueil" class="btn btn-outline-danger mt-2">RETOUR</a>
+                        <?php
+                    }
+
+                    //Si utilisateur est connecté on peu ajouter un commentaire
+                    if(isset($_SESSION['connecter_user']) && $_SESSION['connecter_user'] === true){
+                        ?>
+                        <a href="ajouter_commentaire&id=<?= $res['id'] ?>" class="btn btn-outline-danger mt-2">Ajouter un commentaire</a>
+                        <?php
+                    }else{
+                        ?>
+                        <p></p>
                         <?php
                     }
                     ?>
-
                 </div>
                 <div class="col-6">
                     <p class="card-text"><b>Description : </b></p>
@@ -131,10 +145,10 @@ $req = $db->query("SELECT * FROM gites INNER JOIN category_gites ON gites.gite_c
                     $date_d = new DateTime($res['date_depart']);
                     ?>
                     <p><b>Date d'arrivée : </b> </p>
-                    <p class="alert-success p-2"><?=  $date_a->format('d-m-Y à H:i:s')?></p>
+                    <p class="alert-success p-2"><?=  $date_a->format('d-m-Y')?></p>
 
                     <p><b>Date de depart : </b></p>
-                    <p class="alert-info p-2"> <?=  $date_d->format('d-m-Y à H:i:s')?></p>
+                    <p class="alert-info p-2"> <?=  $date_d->format('d-m-Y')?></p>
 
                 </div>
             </div>
@@ -673,7 +687,6 @@ $req = $db->query("SELECT * FROM gites INNER JOIN category_gites ON gites.gite_c
         }
 
     }
-
     //Afficher des commentaires par gite
     public function getCommentsByGite(){
         //Connexion à PDO
@@ -708,7 +721,45 @@ $req = $db->query("SELECT * FROM gites INNER JOIN category_gites ON gites.gite_c
         ?>
         </ul>
         <?php
-
     }
+    //Ajouter un commentaire au gite
+    public function addCommentToGite(){
+            //Connexion a pdo
+            $db = $this->getPDO();
+            //Recup des elements du formulaire
+            //On verifie les champs du formulaires
+            if(isset($_POST['auteur_commentaire'])){
+                $this->auteur_commentaire = $_POST['auteur_commentaire'];
+            }else{
+                echo "<p class='alert-danger p-2'>Merci de remplir le champ auteur du commentaire</p>";
+            }
 
+            if(isset($_POST['contenus_commentaire'])){
+                $this->contenus_commentaire = $_POST['contenus_commentaire'];
+            }else{
+                echo "<p class='alert-danger p-2'>Merci de remplir le champ contenu du commentaire</p>";
+            }
+
+            if(isset($_POST['gites_id']) && !empty($_POST['gites_id'])){
+                $this->gites_id = htmlspecialchars(strip_tags($_POST['gites_id']));
+            }else{
+                echo "<p class='alert-danger p-2'>Merci de remplir le champs !</p>";
+            }
+
+            //Ici gites_id sera un champs caché et prendra l'id du gite passé dans URL
+            $sql = "INSERT INTO commentaires (auteur_commentaire, contenus_commentaire, gites_id) VALUES (?,?,?)";
+            $insert = $db->prepare($sql);
+            $insert->bindParam(1, $this->auteur_commentaire);
+            $insert->bindParam(2, $this->contenus_commentaire);
+            $insert->bindParam(3, $this->gites_id);
+            $insert->execute(array($this->auteur_commentaire, $this->contenus_commentaire, $this->gites_id));
+
+            $id = $_GET['id'];
+
+            if($insert){
+                header("location:http://localhost/newgites/details_gite&id=$id");
+            }else{
+                echo "<p class='alert-danger p-2 mt-2'></p>";
+        }
+    }
 }

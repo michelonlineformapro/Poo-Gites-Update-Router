@@ -11,7 +11,6 @@ class Database
     public $isConnected = null;
 
 
-
     public function getPDO(){
         try {
             $db = new PDO("mysql:host=".$this->host.";dbname=".$this->dbname.";charset=utf8", $this->user, $this->pass);

@@ -46,6 +46,8 @@ if($url === 'accueil'){
     require "views/confirmer_reservation.php";
 }elseif ($url === "incription"){
     require "views/inscription.php";
+}elseif (isset($_SESSION['connecter_user']) && $_SESSION['connecter_user'] === true && $url === "ajouter_commentaire" && isset($_GET['id']) && $_GET['id'] > 0){
+    require "views/ajouter_commentaire.php";
 }
 
 
